@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 const mongoose = require("mongoose");
 
@@ -34,14 +36,14 @@ const user = new mongoose.Schema({
 	email: String,
 });
 
-const Tasks = mongoose.model("Task", task);
+const Task = mongoose.model("Task", task);
 const User = mongoose.model("User", user);
 
 //methodes get et post
 
 app.get("/tasks", async (req, res) => {
 	try {
-		let tasks = await Tasks.find();
+		let tasks = await Task.find();
 		console.log("list of tasks: " + tasks);
 		res.send(tasks);
 	} catch (error) {
@@ -49,9 +51,38 @@ app.get("/tasks", async (req, res) => {
 	}
 });
 
+app.post("/tasks", async (req, res) => {
+	try {
+		const newTask = new Task(req.body);
+		await newTask.save();
+
+		console.log("created task: " + newTask);
+		res.send(newTask);
+	} catch (error) {
+		console.log(error);
+		res.status(500).send("Error creating task");
+	}
+});
+
+app.delete("/tasks/:id", async (req, res) => {
+	try {
+		const taskId = req.params.id;
+
+		const deletedTask = await Task.findByIdAndDelete(taskId);
+
+		if (!deletedTask) {
+			return res.status(404).send("Task not found");
+		}
+
+		console.log("Deleted task: ", deletedTask);
+		res.send("Task deleted successfully: " + deletedTask);
+	} catch (error) {
+		console.log(error);
+		res.status(500).send("Error deleting task");
+	}
+});
+
 //middleware
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 
 //listen on port x
 app.listen(3001, () => {
