@@ -3,7 +3,7 @@ const app = express();
 
 const mongoose = require("mongoose");
 
-const BASE_API_URL = "mongodb://127.0.0.1:27017/group-project";
+const BASE_API_URL = "mongodb://127.0.0.1:27017/task-reminder";
 
 //connexion à la db
 mongoose
@@ -34,16 +34,16 @@ const user = new mongoose.Schema({
 	email: String,
 });
 
-const Tasks = mongoose.model("Product", task);
+const Tasks = mongoose.model("Task", task);
 const User = mongoose.model("User", user);
 
 //methodes get et post
 
 app.get("/tasks", async (req, res) => {
 	try {
-		let products = await Tasks.find();
-		console.log("list of tasks: " + products);
-		res.send(products);
+		let tasks = await Tasks.find();
+		console.log("list of tasks: " + tasks);
+		res.send(tasks);
 	} catch (error) {
 		console.log(error);
 	}
@@ -55,5 +55,5 @@ app.use(express.json());
 
 //listen on port x
 app.listen(3001, () => {
-	console.log("Listening on  http://localhost:3000");
+	console.log("Listening on  http://localhost:3001");
 });
