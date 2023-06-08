@@ -1,9 +1,11 @@
 const express = require("express");
 const app = express();
+const methodOverride = require("method-override");
 
 //middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(methodOverride("_method"));
 
 app.set("view engine", "ejs");
 
@@ -114,7 +116,7 @@ app.delete("/tasks/:id", async (req, res) => {
 		}
 
 		console.log("Deleted task: ", deletedTask);
-		res.send("Task deleted successfully: " + deletedTask);
+		res.redirect("/");
 	} catch (error) {
 		console.log(error);
 		res.status(500).send("Error deleting task");
