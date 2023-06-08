@@ -13,8 +13,14 @@ const BASE_API_URL = "mongodb://127.0.0.1:27017/task-reminder";
 
 app.use(express.static("public"));
 
-app.get("/", (req, res) => {
-	res.render("home");
+app.get("/", async (req, res) => {
+	try {
+		const tasks = await Task.find();
+		res.render("home", { tasks: tasks });
+	} catch (error) {
+		console.log(error);
+		res.status(500).send("Error fetching tasks");
+	}
 });
 
 //connexion à la db
