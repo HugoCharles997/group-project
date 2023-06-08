@@ -1,0 +1,7 @@
+pages : -homepage (vue des taches et bouton créer et bouton détail and delete)
+        -ajouter une tache
+        -une page détail(avec bouton edit)
+
+base de donnée:
+        -collection tasks(_id, titre, description, personne attribuée, date butoire, date de création )
+        -collection user(_id, name, email, phone)
