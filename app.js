@@ -1,5 +1,7 @@
 const express = require("express");
 const app = express();
+
+//middleware
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
@@ -51,6 +53,16 @@ app.get("/tasks", async (req, res) => {
 	}
 });
 
+app.get("/users", async (req, res) => {
+	try {
+		let users = await User.find();
+		console.log("list of users: " + users);
+		res.send(users);
+	} catch (error) {
+		console.log(error);
+	}
+});
+
 app.post("/tasks", async (req, res) => {
 	try {
 		const newTask = new Task(req.body);
@@ -61,6 +73,19 @@ app.post("/tasks", async (req, res) => {
 	} catch (error) {
 		console.log(error);
 		res.status(500).send("Error creating task");
+	}
+});
+
+app.post("/users", async (req, res) => {
+	try {
+		const newUser = new User(req.body);
+		await newUser.save();
+
+		console.log("created user: " + newUser);
+		res.send(newUser);
+	} catch (error) {
+		console.log(error);
+		res.status(500).send("Error creating user");
 	}
 });
 
@@ -82,9 +107,67 @@ app.delete("/tasks/:id", async (req, res) => {
 	}
 });
 
-//middleware
+app.delete("/users/:id", async (req, res) => {
+	try {
+		const userId = req.params.id;
+
+		const deletedUser = await User.findByIdAndDelete(userId);
+
+		if (!deletedUser) {
+			return res.status(404).send("User not found");
+		}
+
+		console.log("Deleted user: ", deletedUser);
+		res.send("User deleted successfully: " + deletedUser);
+	} catch (error) {
+		console.log(error);
+		res.status(500).send("Error deleting user");
+	}
+});
+
+app.put("/tasks/:id", async (req, res) => {
+	try {
+		const taskId = req.params.id;
+		const updatedTask = req.body;
+
+		const result = await Task.findByIdAndUpdate(taskId, updatedTask, {
+			new: true,
+		});
+
+		if (!result) {
+			return res.status(404).send("Task not found");
+		}
+
+		console.log("Updated task:", result);
+		res.send(result);
+	} catch (err) {
+		console.log(err);
+		res.status(500).send("Error updating task");
+	}
+});
+
+app.put("/users/:id", async (req, res) => {
+	try {
+		const userId = req.params.id;
+		const updatedUser = req.body;
+
+		const result = await User.findByIdAndUpdate(userId, updatedUser, {
+			new: true,
+		});
+
+		if (!result) {
+			return res.status(404).send("User not found");
+		}
+
+		console.log("Updated user:", result);
+		res.send(result);
+	} catch (err) {
+		console.log(err);
+		res.status(500).send("Error updating user");
+	}
+});
 
 //listen on port x
 app.listen(3001, () => {
-	console.log("Listening on  http://localhost:3001");
+	console.log("Listening on http://localhost:3001");
 });
