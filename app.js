@@ -5,9 +5,17 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+app.set("view engine", "ejs");
+
 const mongoose = require("mongoose");
 
 const BASE_API_URL = "mongodb://127.0.0.1:27017/task-reminder";
+
+app.use(express.static("public"));
+
+app.get("/", (req, res) => {
+	res.render("home");
+});
 
 //connexion à la db
 mongoose
