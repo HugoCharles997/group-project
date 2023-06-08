@@ -5,3 +5,5 @@ pages : -homepage (vue des taches et bouton créer et bouton détail and delete)
 base de donnée:
         -collection tasks(_id, titre, description, personne attribuée, date butoire, date de création )
         -collection user(_id, name, email, phone)
+
+
